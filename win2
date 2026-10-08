@@ -8,7 +8,6 @@ cd /d "%~dp0"
 
 echo [Sadex Engine] Starting Accelerated Installation...
 
-:: QEMU Engine with optimized Disk I/O & Threading
-"%QEMU_PATH%\qemu-system-x86_64.exe" -m 2068 -smp 2 -cpu qemu64,thread=multi -display sdl -vga std -drive file=android_disk.qcow2,format=qcow2,cache=unsafe,if=virtio -cdrom Android-x86.iso -boot d
+"%QEMU_PATH%\qemu-system-x86_64.exe" -m 2068 -smp 2 -cpu qemu64 -display sdl -vga std -drive file=android_disk.qcow2,format=qcow2,cache=unsafe,if=virtio -cdrom Android-x86.iso -boot d
 
 pause
