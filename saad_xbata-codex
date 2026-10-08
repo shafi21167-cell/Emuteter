@@ -1,0 +1,14 @@
+@echo off
+title SADEX Beta Emulator Launcher
+
+if not exist "android_disk.qcow2" (
+    qemu-img create -f qcow2 android_disk.qcow2 64G
+)
+
+qemu-system-x86_64 -m 4096 -smp 4 ^
+  -boot d ^
+  -cdrom Android-x86.iso ^
+  -hda android_disk.qcow2 ^
+  -vga virtio -net nic -net user
+
+exit
