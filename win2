@@ -1,31 +1,14 @@
 @echo off
 title Sadex Beta Android Core Engine
 
-:: QEMU Installation Directory
 set QEMU_PATH=C:\Program Files\qemu
 set PATH=%QEMU_PATH%;%PATH%
 
-:: Force current working directory to script location
 cd /d "%~dp0"
 
-echo [Sadex Engine] Initializing environment...
+echo [Sadex Engine] Starting Accelerated Installation...
 
-:: Check if QEMU exists
-if not exist "%QEMU_PATH%\qemu-system-x86_64.exe" (
-    echo [ERROR] QEMU is not installed in %QEMU_PATH%!
-    echo Please install QEMU or fix the PATH in script.
-    pause
-    exit
-)
-
-:: Step 1: Create Virtual Hard Disk if missing
-if not exist "android_disk.qcow2" (
-    echo [Sadex Engine] Creating 64GB Virtual Disk...
-    "%QEMU_PATH%\qemu-img.exe" create -f qcow2 android_disk.qcow2 64G
-)
-
-:: Step 2: Boot Android Engine
-echo [Sadex Engine] Starting Android OS Instance...
-"%QEMU_PATH%\qemu-system-x86_64.exe" -m 2068 -smp 2 -cpu qemu64 -display sdl -vga std -cdrom Android-x86.iso -boot d -hda android_disk.qcow2
+:: QEMU Engine with optimized Disk I/O & Threading
+"%QEMU_PATH%\qemu-system-x86_64.exe" -m 2068 -smp 2 -cpu qemu64,thread=multi -display sdl -vga std -drive file=android_disk.qcow2,format=qcow2,cache=unsafe,if=virtio -cdrom Android-x86.iso -boot d
 
 pause
