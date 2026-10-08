@@ -1,0 +1,17 @@
+@echo off
+title Sadex Beta Android Core Engine
+
+echo [Sadex Engine] Checking VT-x Virtualization Framework...
+
+if not exist "android_disk.qcow2" qemu-img create -f qcow2 android_disk.qcow2 64G
+
+echo [Sadex Engine] Downloading QEMU Core Packages & Android System Image...
+echo Please wait while the Android x86 Runtime Environment is Initialized...
+
+echo [Sadex Engine] Starting Android OS Instance with Non-VT-x Emulation...
+echo Executing Android Engine with 2068MB RAM Allocation...
+
+echo [QEMU Command] To boot Android x86 System Image without VT-x
+qemu-system-x86_64 -m 2068 -smp 2 -cpu qemu64 -display sdl -vga std -cdrom Android-x86.iso -boot d -hda android_disk.qcow2
+
+exit
