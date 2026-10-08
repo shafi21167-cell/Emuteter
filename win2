@@ -1,17 +1,31 @@
 @echo off
 title Sadex Beta Android Core Engine
 
-echo [Sadex Engine] Checking VT-x Virtualization Framework...
+:: QEMU Installation Directory
+set QEMU_PATH=C:\Program Files\qemu
+set PATH=%QEMU_PATH%;%PATH%
 
-if not exist "android_disk.qcow2" qemu-img create -f qcow2 android_disk.qcow2 64G
+:: Force current working directory to script location
+cd /d "%~dp0"
 
-echo [Sadex Engine] Downloading QEMU Core Packages & Android System Image...
-echo Please wait while the Android x86 Runtime Environment is Initialized...
+echo [Sadex Engine] Initializing environment...
 
-echo [Sadex Engine] Starting Android OS Instance with Non-VT-x Emulation...
-echo Executing Android Engine with 2068MB RAM Allocation...
+:: Check if QEMU exists
+if not exist "%QEMU_PATH%\qemu-system-x86_64.exe" (
+    echo [ERROR] QEMU is not installed in %QEMU_PATH%!
+    echo Please install QEMU or fix the PATH in script.
+    pause
+    exit
+)
 
-echo [QEMU Command] To boot Android x86 System Image without VT-x
-qemu-system-x86_64 -m 2068 -smp 2 -cpu qemu64 -display sdl -vga std -cdrom Android-x86.iso -boot d -hda android_disk.qcow2
+:: Step 1: Create Virtual Hard Disk if missing
+if not exist "android_disk.qcow2" (
+    echo [Sadex Engine] Creating 64GB Virtual Disk...
+    "%QEMU_PATH%\qemu-img.exe" create -f qcow2 android_disk.qcow2 64G
+)
 
-exit
+:: Step 2: Boot Android Engine
+echo [Sadex Engine] Starting Android OS Instance...
+"%QEMU_PATH%\qemu-system-x86_64.exe" -m 2068 -smp 2 -cpu qemu64 -display sdl -vga std -cdrom Android-x86.iso -boot d -hda android_disk.qcow2
+
+pause
